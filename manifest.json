@@ -1,0 +1,13 @@
+{
+  "name": "Realm — Gestion commerciale",
+  "short_name": "Realm",
+  "description": "Application de gestion commerciale pour les commerçants au Cameroun",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAF8F4",
+  "theme_color": "#3B2F6B",
+  "icons": [
+    { "src": "/static/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/static/icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

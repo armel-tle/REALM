@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Données — Realm{% endblock %}
+
+{% block content %}
+<h1>🗂️ Données</h1>
+<p class="souscription">Exportez vos données ou repartez de zéro si besoin.</p>
+
+<div class="grille-stats">
+  <div class="carte-stat">
+    <span class="stat-label">Produits</span>
+    <span class="stat-valeur">{{ nb_produits }}</span>
+  </div>
+  <div class="carte-stat">
+    <span class="stat-label">Ventes</span>
+    <span class="stat-valeur">{{ nb_ventes }}</span>
+  </div>
+  <div class="carte-stat">
+    <span class="stat-label">Clients</span>
+    <span class="stat-valeur">{{ nb_clients }}</span>
+  </div>
+  <div class="carte-stat">
+    <span class="stat-label">Dépenses</span>
+    <span class="stat-valeur">{{ nb_depenses }}</span>
+  </div>
+</div>
+
+<section class="panneau">
+  <h2>📤 Exporter en CSV</h2>
+  <p class="souscription">Téléchargez vos données pour les garder ou les ouvrir dans Excel.</p>
+  <div class="grille-export">
+    <a href="{{ url_for('exporter_csv', table='produits') }}" class="bouton bouton-secondaire">📦 Produits</a>
+    <a href="{{ url_for('exporter_csv', table='ventes') }}" class="bouton bouton-secondaire">🧾 Ventes</a>
+    <a href="{{ url_for('exporter_csv', table='depenses') }}" class="bouton bouton-secondaire">💸 Dépenses</a>
+    <a href="{{ url_for('exporter_csv', table='clients') }}" class="bouton bouton-secondaire">👥 Clients</a>
+  </div>
+</section>
+
+<section class="panneau panneau-danger">
+  <h2>⚠️ Réinitialiser toutes les données</h2>
+  <p class="souscription">
+    Cette action supprime définitivement tous les produits, ventes, dépenses et clients.
+    Pensez à exporter vos données avant si besoin.
+  </p>
+  <form method="POST" action="{{ url_for('reinitialiser_donnees') }}" onsubmit="return confirm('Es-tu sûr de vouloir tout supprimer ? Cette action est irréversible.');">
+    <button type="submit" class="bouton bouton-danger">Tout réinitialiser</button>
+  </form>
+</section>
+{% endblock %}

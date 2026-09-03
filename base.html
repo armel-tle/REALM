@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- SEO -->
+<title>{% block title %}Realm — Gestion commerciale pour le Cameroun{% endblock %}</title>
+<meta name="description" content="{% block description %}Realm est l'application de gestion commerciale pensée pour les commerçants camerounais : stock, ventes, dépenses, clients et crédits, le tout en un seul endroit.{% endblock %}">
+<meta name="keywords" content="gestion commerciale Cameroun, gestion de stock, application boutique Cameroun, gestion ventes, Realm">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://realm.onrender.com{{ request.path }}">
+
+<!-- Open Graph / réseaux sociaux -->
+<meta property="og:title" content="Realm — Gestion commerciale">
+<meta property="og:description" content="Gérez votre stock, vos ventes, vos dépenses et vos clients depuis une seule application, pensée pour le Cameroun.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+
+<!-- PWA -->
+<link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+<meta name="theme-color" content="#3B2F6B">
+<link rel="icon" href="{{ url_for('static', filename='icons/icon-192.png') }}">
+<link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/icon-192.png') }}">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="coquille">
+
+  <aside class="sidebar">
+    <div class="marque">
+      <span class="marque-symbole">👑</span>
+      <div>
+        <div class="marque-nom">Realm</div>
+        <div class="marque-souscription">Gestion commerciale</div>
+      </div>
+    </div>
+
+    <nav class="nav-laterale">
+      <a href="{{ url_for('index') }}" class="{% if request.path == '/' %}actif{% endif %}">
+        <span class="nav-icone">🏠</span> Tableau de bord
+      </a>
+      <a href="{{ url_for('produits') }}" class="{% if request.path == '/produits' %}actif{% endif %}">
+        <span class="nav-icone">📦</span> Produits &amp; stock
+      </a>
+      <a href="{{ url_for('ventes') }}" class="{% if request.path == '/ventes' %}actif{% endif %}">
+        <span class="nav-icone">🧾</span> Ventes
+      </a>
+      <a href="{{ url_for('depenses') }}" class="{% if request.path == '/depenses' %}actif{% endif %}">
+        <span class="nav-icone">💸</span> Dépenses
+      </a>
+      <a href="{{ url_for('clients') }}" class="{% if request.path == '/clients' %}actif{% endif %}">
+        <span class="nav-icone">👥</span> Clients &amp; crédits
+      </a>
+      <a href="{{ url_for('rapports') }}" class="{% if request.path == '/rapports' %}actif{% endif %}">
+        <span class="nav-icone">📊</span> Rapports
+      </a>
+      <a href="{{ url_for('donnees') }}" class="{% if request.path == '/donnees' %}actif{% endif %}">
+        <span class="nav-icone">🗂️</span> Données
+      </a>
+    </nav>
+  </aside>
+
+  <div class="zone-principale">
+    <header class="barre-superieure">
+      <button class="bouton-menu-mobile" onclick="document.querySelector('.sidebar').classList.toggle('ouverte')">☰</button>
+      <div class="avatar-utilisateur">AR</div>
+    </header>
+
+    <main class="contenu">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for categorie, message in messages %}
+            <div class="flash flash-{{ categorie }}">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</div>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register("{{ url_for('static', filename='service-worker.js') }}").catch(() => {});
+  }
+</script>
+</body>
+</html>
