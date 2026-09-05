@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Produits & stock — Realm{% endblock %}
+
+{% block content %}
+<h1>📦 Produits &amp; stock</h1>
+<p class="souscription">Ajoutez vos produits pour suivre le stock et les prix.</p>
+
+<section class="panneau">
+  <h2>Ajouter un produit</h2>
+  <form method="POST" action="{{ url_for('ajouter_produit') }}" class="formulaire">
+    <div class="champ">
+      <label for="nom">Nom du produit</label>
+      <input type="text" id="nom" name="nom" placeholder="Ex : Riz 5kg" required>
+    </div>
+    <div class="champ champ-court">
+      <label for="quantite">Quantité en stock</label>
+      <input type="number" id="quantite" name="quantite" min="0" value="0" required>
+    </div>
+    <div class="champ champ-court">
+      <label for="seuil_alerte">Seuil d'alerte</label>
+      <input type="number" id="seuil_alerte" name="seuil_alerte" min="0" value="5" required>
+    </div>
+    <div class="champ champ-court">
+      <label for="prix_achat">Prix d'achat (FCFA)</label>
+      <input type="number" id="prix_achat" name="prix_achat" min="0" step="1" value="0" required>
+    </div>
+    <div class="champ champ-court">
+      <label for="prix_vente">Prix de vente (FCFA)</label>
+      <input type="number" id="prix_vente" name="prix_vente" min="0" step="1" value="0" required>
+    </div>
+    <button type="submit" class="bouton bouton-primaire">Ajouter le produit</button>
+  </form>
+</section>
+
+<section class="panneau">
+  <h2>Catalogue actuel</h2>
+  {% if produits %}
+  <div class="tableau-scroll">
+    <table class="tableau">
+      <thead>
+        <tr>
+          <th>Produit</th><th>Stock</th><th>Seuil</th><th>Prix d'achat</th><th>Prix de vente</th><th>Marge</th><th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in produits %}
+        <tr class="{% if p.quantite <= p.seuil_alerte %}ligne-alerte{% endif %}">
+          <td>{{ p.nom }}</td>
+          <td>{{ p.quantite }}{% if p.quantite <= p.seuil_alerte %} ⚠️{% endif %}</td>
+          <td>{{ p.seuil_alerte }}</td>
+          <td>{{ "%.0f"|format(p.prix_achat) }} FCFA</td>
+          <td>{{ "%.0f"|format(p.prix_vente) }} FCFA</td>
+          <td>{{ "%.0f"|format(p.prix_vente - p.prix_achat) }} FCFA</td>
+          <td>
+            <form method="POST" action="{{ url_for('supprimer_produit', produit_id=p.id) }}" onsubmit="return confirm('Supprimer ce produit ?');">
+              <button type="submit" class="bouton-lien">Supprimer</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+    <p class="vide">Aucun produit pour l'instant. Ajoutez-en un ci-dessus.</p>
+  {% endif %}
+</section>
+{% endblock %}

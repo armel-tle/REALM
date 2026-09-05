@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Clients & crédits — Realm{% endblock %}
+
+{% block content %}
+<h1>👥 Clients &amp; crédits</h1>
+<p class="souscription">Gardez une trace de vos clients et des ventes à crédit non payées.</p>
+
+<section class="panneau">
+  <h2>Ajouter un client</h2>
+  <form method="POST" action="{{ url_for('ajouter_client') }}" class="formulaire">
+    <div class="champ">
+      <label for="nom">Nom du client</label>
+      <input type="text" id="nom" name="nom" placeholder="Ex : Mme Ngo Bella" required>
+    </div>
+    <div class="champ champ-court">
+      <label for="telephone">Téléphone</label>
+      <input type="text" id="telephone" name="telephone" placeholder="6XX XXX XXX">
+    </div>
+    <button type="submit" class="bouton bouton-primaire">Ajouter</button>
+  </form>
+</section>
+
+<section class="panneau">
+  <h2>💳 Crédits en attente</h2>
+  {% if credits %}
+    {% for c in credits %}
+    <div class="carte-credit">
+      <div class="carte-credit-entete">
+        <strong>{{ c.client.nom }}</strong>
+        <span class="stat-valeur-petite">{{ "%.0f"|format(c.total_du) }} FCFA dû</span>
+      </div>
+      <ul class="liste-simple">
+        {% for d in c.details %}
+        <li>
+          {{ d.date_vente }} — {{ d.quantite_vendue }} x {{ d.nom }} ({{ "%.0f"|format(d.total) }} FCFA)
+          <form method="POST" action="{{ url_for('marquer_paye', vente_id=d.id) }}" style="display:inline;">
+            <button type="submit" class="bouton-lien-succes">Marquer payé ✅</button>
+          </form>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endfor %}
+  {% else %}
+    <p class="vide">✅ Aucun crédit en attente pour l'instant.</p>
+  {% endif %}
+</section>
+
+<section class="panneau">
+  <h2>Liste des clients</h2>
+  {% if clients %}
+  <div class="tableau-scroll">
+    <table class="tableau">
+      <thead><tr><th>Nom</th><th>Téléphone</th></tr></thead>
+      <tbody>
+        {% for c in clients %}
+        <tr><td>{{ c.nom }}</td><td>{{ c.telephone or "—" }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+    <p class="vide">Aucun client enregistré pour l'instant.</p>
+  {% endif %}
+</section>
+{% endblock %}

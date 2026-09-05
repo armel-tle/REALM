@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Ventes — Realm{% endblock %}
+
+{% block content %}
+<h1>🧾 Ventes</h1>
+<p class="souscription">Enregistrez chaque vente pour mettre le stock et les statistiques à jour.</p>
+
+<section class="panneau">
+  <h2>Enregistrer une vente</h2>
+  {% if produits %}
+  <form method="POST" action="{{ url_for('enregistrer_vente') }}" class="formulaire">
+    <div class="champ">
+      <label for="produit_id">Produit</label>
+      <select id="produit_id" name="produit_id" required>
+        {% for p in produits %}
+        <option value="{{ p.id }}">{{ p.nom }} — {{ p.quantite }} en stock</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="champ champ-court">
+      <label for="quantite_vendue">Quantité vendue</label>
+      <input type="number" id="quantite_vendue" name="quantite_vendue" min="1" value="1" required>
+    </div>
+    <div class="champ">
+      <label for="client_id">Client (optionnel)</label>
+      <select id="client_id" name="client_id">
+        <option value="">— Aucun —</option>
+        {% for c in clients %}
+        <option value="{{ c.id }}">{{ c.nom }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="champ champ-checkbox">
+      <label class="label-checkbox">
+        <input type="checkbox" name="est_credit"> 💳 Vente à crédit
+      </label>
+    </div>
+    <button type="submit" class="bouton bouton-primaire">Enregistrer la vente</button>
+  </form>
+  {% else %}
+    <p class="vide">Ajoutez d'abord des produits avant d'enregistrer une vente.</p>
+  {% endif %}
+</section>
+
+<section class="panneau">
+  <h2>Dernières ventes</h2>
+  {% if historique %}
+  <div class="tableau-scroll">
+    <table class="tableau">
+      <thead>
+        <tr><th>Date</th><th>Produit</th><th>Qté</th><th>Total</th><th>Client</th><th>Statut</th></tr>
+      </thead>
+      <tbody>
+        {% for v in historique %}
+        <tr>
+          <td>{{ v.date_vente }}</td>
+          <td>{{ v.produit_nom }}</td>
+          <td>{{ v.quantite_vendue }}</td>
+          <td>{{ "%.0f"|format(v.total_vente) }} FCFA</td>
+          <td>{{ v.client_nom or "—" }}</td>
+          <td>
+            {% if v.est_credit and not v.paye %}
+              <span class="badge badge-attention">💳 Non payé</span>
+            {% elif v.est_credit and v.paye %}
+              <span class="badge badge-succes">✅ Crédit payé</span>
+            {% else %}
+              <span class="badge badge-neutre">Payé</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+    <p class="vide">Aucune vente enregistrée pour l'instant.</p>
+  {% endif %}
+</section>
+{% endblock %}

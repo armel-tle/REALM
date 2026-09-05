@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Rapports — Realm{% endblock %}
+
+{% block content %}
+<h1>📊 Rapports</h1>
+<p class="souscription">Vue détaillée de vos performances pour ajuster vos décisions.</p>
+
+<section class="panneau">
+  <h2>🏆 Produits les plus vendus</h2>
+  {% if top_produits %}
+  <div class="tableau-scroll">
+    <table class="tableau">
+      <thead><tr><th>Produit</th><th>Quantité vendue</th><th>Marge totale générée</th></tr></thead>
+      <tbody>
+        {% for p in top_produits %}
+        <tr>
+          <td>{{ loop.index }}. {{ p.nom }}</td>
+          <td>{{ p.total_vendu }}</td>
+          <td>{{ "%.0f"|format(p.marge_totale) }} FCFA</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+    <p class="vide">Pas encore assez de ventes pour établir ce classement.</p>
+  {% endif %}
+</section>
+
+<section class="panneau">
+  <h2>📅 Ventes des 14 derniers jours</h2>
+  {% if ventes_par_jour %}
+  <div class="tableau-scroll">
+    <table class="tableau">
+      <thead><tr><th>Jour</th><th>Chiffre d'affaires</th></tr></thead>
+      <tbody>
+        {% for j in ventes_par_jour %}
+        <tr><td>{{ j.jour }}</td><td>{{ "%.0f"|format(j.total_jour) }} FCFA</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+    <p class="vide">Aucune vente enregistrée récemment.</p>
+  {% endif %}
+</section>
+
+<section class="panneau">
+  <h2>💸 Répartition des dépenses</h2>
+  {% if depenses_par_type %}
+  <div class="tableau-scroll">
+    <table class="tableau">
+      <thead><tr><th>Libellé</th><th>Total</th></tr></thead>
+      <tbody>
+        {% for d in depenses_par_type %}
+        <tr><td>{{ d.libelle }}</td><td>{{ "%.0f"|format(d.total) }} FCFA</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+    <p class="vide">Aucune dépense enregistrée pour l'instant.</p>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}Tableau de bord — Realm{% endblock %}
+
+{% block content %}
+<div class="entete-page">
+  <div>
+    <h1>Tableau de bord</h1>
+    <p class="date-jour">{{ moment_du_jour if moment_du_jour else "" }}</p>
+  </div>
+  <a href="{{ url_for('produits') }}" class="bouton bouton-primaire">+ Produit</a>
+</div>
+
+<div class="grille-stats">
+  <div class="carte-stat">
+    <span class="stat-label">Chiffre d'affaires</span>
+    <span class="stat-valeur">{{ "%.0f"|format(chiffre_affaires) }} FCFA</span>
+    <span class="stat-note">Toutes les ventes</span>
+  </div>
+  <div class="carte-stat">
+    <span class="stat-label">Bénéfice estimé</span>
+    <span class="stat-valeur">{{ "%.0f"|format(benefice_estime) }} FCFA</span>
+    <span class="stat-note">Après coût + dépenses</span>
+  </div>
+  <div class="carte-stat">
+    <span class="stat-label">Valeur du stock</span>
+    <span class="stat-valeur">{{ "%.0f"|format(valeur_stock) }} FCFA</span>
+    <span class="stat-note">Au prix d'achat</span>
+  </div>
+  <div class="carte-stat">
+    <span class="stat-label">Crédits clients</span>
+    <span class="stat-valeur">{{ "%.0f"|format(credits_clients) }} FCFA</span>
+    <span class="stat-note">Ventes à crédit</span>
+  </div>
+</div>
+
+<section class="panneau">
+  <h2>Actions rapides</h2>
+  <div class="grille-actions">
+    <a href="{{ url_for('produits') }}" class="action-rapide">
+      <span class="action-icone">📦</span>
+      <div>
+        <div class="action-titre">Nouveau produit</div>
+        <div class="action-souscription">Ajouter au stock</div>
+      </div>
+    </a>
+    <a href="{{ url_for('ventes') }}" class="action-rapide">
+      <span class="action-icone">🧾</span>
+      <div>
+        <div class="action-titre">Nouvelle vente</div>
+        <div class="action-souscription">Enregistrer une vente</div>
+      </div>
+    </a>
+    <a href="{{ url_for('depenses') }}" class="action-rapide">
+      <span class="action-icone">💸</span>
+      <div>
+        <div class="action-titre">Nouvelle dépense</div>
+        <div class="action-souscription">Enregistrer une charge</div>
+      </div>
+    </a>
+    <a href="{{ url_for('clients') }}" class="action-rapide">
+      <span class="action-icone">👥</span>
+      <div>
+        <div class="action-titre">Nouveau client</div>
+        <div class="action-souscription">Ajouter un client</div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<div class="grille-deux">
+  <section class="panneau">
+    <h2>⚠️ Stock à surveiller</h2>
+    {% if stock_bas %}
+      <ul class="liste-alerte">
+        {% for p in stock_bas %}
+        <li>
+          <span class="alerte-point"></span>
+          <strong>{{ p.nom }}</strong> — {{ p.quantite }} restant(s)
+          <span class="souscription-inline">(seuil : {{ p.seuil_alerte }})</span>
+        </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="vide">✅ Aucun stock faible pour l'instant.</p>
+    {% endif %}
+    <a href="{{ url_for('produits') }}" class="lien-voir-plus">Voir les produits →</a>
+  </section>
+
+  <section class="panneau">
+    <h2>💎 Ce qui rapporte le plus</h2>
+    {% if plus_rentable %}
+      <p class="mise-en-avant">{{ plus_rentable.nom }}</p>
+      <p class="souscription">
+        Marge de {{ "%.0f"|format(plus_rentable.prix_vente - plus_rentable.prix_achat) }} FCFA par unité vendue.
+      </p>
+    {% else %}
+      <p class="vide">Ajoutez des prix d'achat et de vente pour voir apparaître cette information.</p>
+    {% endif %}
+
+    {% if produit_plus_vendu %}
+      <p class="souscription" style="margin-top: 14px;">
+        🔥 Produit le plus vendu : <strong>{{ produit_plus_vendu }}</strong>
+      </p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}
